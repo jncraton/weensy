@@ -554,7 +554,7 @@ void log_program_info(const char* program_name) {
 }
 ```
 
-The relationship between `seg.va()` and `seg.data()` is worth emphasizing. `seg.va()` is a *user virtual address*. It is the process virtual address where the process code expects the segment to be loaded. `seg.data()`, on the other hand, is a *kernel pointer*. It points into the program image data in the kernel. WeensyOS `seg.va()` values are all `&gt;= PROC_START_ADDR` (0x100000), and are typically page-aligned, whereas `seg.data()` values are between 0x40000 and 0x80000 and are not aligned.
+The relationship between `seg.va()` and `seg.data()` is worth emphasizing. `seg.va()` is a *user virtual address*. It is the process virtual address where the process code expects the segment to be loaded. `seg.data()`, on the other hand, is a *kernel pointer*. It points into the program image data in the kernel. WeensyOS `seg.va()` values are all `>= PROC_START_ADDR` (0x100000), and are typically page-aligned, whereas `seg.data()` values are between 0x40000 and 0x80000 and are not aligned.
 
 </details>
 
