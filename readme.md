@@ -311,7 +311,7 @@ and for the `exception_entry` and `syscall_entry` code paths.
 Step 1: Kernel isolation
 ------------------------
 
-WeensyOS processes could stomp all over the kernel's memory if they wanted. Better stop that. Change `kernel_start`, the kernel initialization function, so that kernel memory is inaccessible to applications - except for the memory holding the CGA console (the single page at `CONSOLE_ADDR == 0xB8000`).
+WeensyOS processes could stomp all over the kernel's memory if they wanted. Better stop that. Change `kernel_start`, the kernel initialization function, so that kernel memory is inaccessible to applications - except for the memory holding the CGA console (the single page at `CONSOLE_ADDR == 0x0B8000`).
 
 
 When you are done, WeensyOS should look like this. In the virtual map, kernel memory is no longer reverse-video, since the user can't access it. Note the lonely CGA console memory block.
