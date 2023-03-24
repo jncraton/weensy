@@ -334,7 +334,7 @@ bool reserved_physical_address(uintptr_t pa) {
 //    not reserved or holding kernel data.
 
 bool allocatable_physical_address(uintptr_t pa) {
-    extern char _kernel_end;
+    extern uint8_t _kernel_end;
     return !reserved_physical_address(pa)
         && (pa < KERNEL_START_ADDR
             || pa >= round_up((uintptr_t) _kernel_end, PAGESIZE))
