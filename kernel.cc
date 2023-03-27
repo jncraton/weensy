@@ -63,9 +63,17 @@ void kernel_start(const char* command) {
     for (vmiter it(kernel_pagetable);
          it.va() < MEMSIZE_PHYSICAL;
          it += PAGESIZE) {
-        if (it.va() != 0) {
-            it.map(it.va(), PTE_P | PTE_W | PTE_U);
-        } else {
+        if(it.va() != 0){
+            if(it.va() == CONSOLE_ADDR || it.va() >= PROC_START_ADDR){
+                // CGA console and process memory are accessible to applications
+                it.map(it.va(), PTE_P | PTE_W | PTE_U);
+            }
+            else{
+                // All other memory is accessible only to the kernel
+                it.map(it.va(), PTE_P | PTE_W);
+            }
+        }
+        else {
             // nullptr is inaccessible even to the kernel
             it.map(it.va(), 0);
         }
@@ -323,10 +331,13 @@ uintptr_t syscall(regstate* regs) {
 //    in `u-lib.hh` (but in the handout code, it does not).
 
 int syscall_page_alloc(uintptr_t addr) {
-    assert(physpages[addr / PAGESIZE].refcount == 0);
-    ++physpages[addr / PAGESIZE].refcount;
-    memset((void*) addr, 0, PAGESIZE);
-    return 0;
+    if (addr >= PROC_START_ADDR && addr < MEMSIZE_VIRTUAL && addr % PAGESIZE == 0) {
+        assert(physpages[addr / PAGESIZE].refcount == 0);
+        ++physpages[addr / PAGESIZE].refcount;
+        memset((void*) addr, 0, PAGESIZE);
+        return 0;
+    }
+    return -1;
 }
 
 
