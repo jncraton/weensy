@@ -65,7 +65,7 @@ void kernel_start(const char* command) {
          it += PAGESIZE) {
         if(it.va() != 0){
             if(it.va() == CONSOLE_ADDR || it.va() >= PROC_START_ADDR){
-                // CGA console and process memory are accessible to applications
+                // CGA console and process memory are accessible
                 it.map(it.va(), PTE_P | PTE_W | PTE_U);
             }
             else{
