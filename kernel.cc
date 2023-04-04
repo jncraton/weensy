@@ -184,6 +184,7 @@ void process_setup(pid_t pid, const char* program_name) {
             void* pa = kalloc(PAGESIZE);
             if(pa){
                 vmiter(ptable[pid].pagetable , a).map(pa, PTE_PWU); 
+                memset(pa, 0, PAGESIZE);
             }
         }
     }
@@ -199,13 +200,14 @@ void process_setup(pid_t pid, const char* program_name) {
 
     // allocate and map stack segment
     // Compute process virtual address for stack page
-    uintptr_t stack_addr = PROC_START_ADDR + PROC_SIZE * pid - PAGESIZE;
+    uintptr_t stack_addr = MEMSIZE_VIRTUAL - PAGESIZE;
     // The handout code requires that the corresponding physical address
     // is currently free.
     
     void* pa = kalloc(PAGESIZE);
     if(pa){
         vmiter(ptable[pid].pagetable, stack_addr).map(pa, PTE_PWU);
+        memset(pa, 0, PAGESIZE);
     }
 
     ptable[pid].regs.reg_rsp = stack_addr + PAGESIZE;
