@@ -170,7 +170,6 @@ void process_setup(pid_t pid, const char* program_name) {
 
     // obtain reference to the program image
     program_image pgm(program_name);
-    set_pagetable(ptable[pid].pagetable);
 
     // allocate and map global memory required by loadable segments
     for (auto seg = pgm.begin(); seg != pgm.end(); ++seg) {
@@ -188,12 +187,16 @@ void process_setup(pid_t pid, const char* program_name) {
             }
         }
     }
+    
+    set_pagetable(ptable[pid].pagetable);
 
     // initialize data in loadable segments
     for (auto seg = pgm.begin(); seg != pgm.end(); ++seg) {
         memset((void*) seg.va(), 0, seg.size());
         memcpy((void*) seg.va(), seg.data(), seg.data_size());
     }
+    
+    set_pagetable(kernel_pagetable);
 
     // mark entry point
     ptable[pid].regs.reg_rip = pgm.entry();
