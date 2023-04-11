@@ -182,7 +182,7 @@ void process_setup(pid_t pid, const char* program_name) {
 
             void* pa = kalloc(PAGESIZE);
             if(pa){
-                vmiter(ptable[pid].pagetable , a).map(pa, PTE_PWU); 
+                vmiter(ptable[pid].pagetable, a).map(pa, PTE_PWU); 
                 memset(pa, 0, PAGESIZE);
             }
         }
