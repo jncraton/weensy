@@ -334,7 +334,7 @@ bool reserved_physical_address(uintptr_t pa) {
 //    not reserved or holding kernel data.
 
 bool allocatable_physical_address(uintptr_t pa) {
-    extern uint8_t _kernel_end;
+    extern uint8_t _kernel_end[];
     return !reserved_physical_address(pa)
         && (pa < KERNEL_START_ADDR
             || pa >= round_up((uintptr_t) _kernel_end, PAGESIZE))
@@ -776,7 +776,7 @@ int check_keyboard() {
         multiboot_info[4] = (uint32_t) argument_ptr;
         // restore initial value of data segment for reboot support
         stash_kernel_data(true);
-        extern uint8_t _data_start, _edata, _kernel_end;
+        extern uint8_t _data_start, _edata, _kernel_end[];
         uintptr_t data_size = (uintptr_t) &_edata - (uintptr_t) &_data_start;
         uintptr_t zero_size = (uintptr_t) &_kernel_end - (uintptr_t) &_edata;
         uint8_t* data_stash = (uint8_t*) (SYMTAB_ADDR - data_size);
@@ -1059,12 +1059,12 @@ void __cxa_atexit(...) {
 //    physical memory.
 static void stash_kernel_data(bool reboot) {
     // stash initial value of data segment for soft-reboot support
-    extern uint8_t _data_start, _edata, _kernel_end;
+    extern uint8_t _data_start, _edata, _kernel_end[];
     uintptr_t data_size = (uintptr_t) &_edata - (uintptr_t) &_data_start;
     uint8_t* data_stash = (uint8_t*) (SYMTAB_ADDR - data_size);
     if (reboot) {
         memcpy(&_data_start, data_stash, data_size);
-        memset(&_edata, 0, &_kernel_end - &_edata);
+        memset(&_edata, 0, _kernel_end - &_edata);
     } else {
         memcpy(data_stash, &_data_start, data_size);
     }
